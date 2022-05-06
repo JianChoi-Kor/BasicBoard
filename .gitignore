@@ -34,3 +34,4 @@ build/
 
 ### Properties ###
 application.properties
+application-local.properties
