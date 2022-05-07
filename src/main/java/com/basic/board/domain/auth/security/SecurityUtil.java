@@ -12,4 +12,12 @@ public class SecurityUtil {
         }
         return authentication.getName();
     }
+
+    public static Authentication getCurrentAuthentication() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("No authentication information.");
+        }
+        return authentication;
+    }
 }

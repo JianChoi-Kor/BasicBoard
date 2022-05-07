@@ -2,6 +2,7 @@ package com.basic.board.domain.auth;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -24,9 +25,9 @@ public class AuthReqDto {
         @NotBlank(message = "비밀번호 확인은 필수 입력값입니다.")
         private String passwordConfirm;
 
-        @Pattern(regexp = "^[가-힣]*$", message = "이름은 한글만 입력해주세요.")
-        @NotBlank(message = "이름은 필수 입력값입니다.")
-        private String name;
+        @Pattern(regexp = "^[가-힣]*$", message = "닉네임은 한글만 입력해주세요.")
+        @NotBlank(message = "닉네임은 필수 입력값입니다.")
+        private String nickname;
     }
 
     @Getter
@@ -39,19 +40,15 @@ public class AuthReqDto {
 
         @NotBlank(message = "비밀번호를 입력해주세요.")
         private String password;
+
+        public UsernamePasswordAuthenticationToken toAuthentication() {
+            return new UsernamePasswordAuthenticationToken(email, password);
+        }
     }
 
     @Getter
     @Setter
     public static class Reissue {
-
-        @NotBlank(message = "refreshToken 을 입력해주세요.")
-        private String refreshToken;
-    }
-
-    @Getter
-    @Setter
-    public static class Logout {
 
         @NotBlank(message = "refreshToken 을 입력해주세요.")
         private String refreshToken;

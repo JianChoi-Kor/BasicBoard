@@ -48,12 +48,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@Validated AuthReqDto.Logout logout, Errors errors) {
-        //valid check
-        if (errors.hasErrors()) {
-            return response.validResponse(errors);
-        }
-        return authService.logout(logout);
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        return authService.logout(request);
     }
 
     @RequestMapping("/fail")

@@ -32,8 +32,8 @@ public class Member extends BaseDateEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "nickname")
+    private String nickname;
 
     @Column
     @ElementCollection(fetch = FetchType.EAGER)
