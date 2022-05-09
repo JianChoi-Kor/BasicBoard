@@ -32,7 +32,7 @@ public class Board extends BaseDateEntity {
     private Long views = 0L;
 
     //작성자
-    @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Member.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "idx")
     private Member writer;
 
