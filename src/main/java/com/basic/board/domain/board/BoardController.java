@@ -34,7 +34,7 @@ public class BoardController {
 
     @GetMapping("/{boardIdx}")
     public ResponseEntity<?> boardDetail(@PathVariable Long boardIdx) {
-        BoardResDto.BoardForDetail boardForDetail = boardService.boardDetail(boardIdx);
+        BoardResDto.BoardDetail boardForDetail = boardService.boardDetail(boardIdx);
         return response.success(boardForDetail);
     }
 
@@ -51,5 +51,30 @@ public class BoardController {
     @DeleteMapping("/{boardIdx}")
     public ResponseEntity<?> deleteBoard(@PathVariable Long boardIdx) {
         return boardService.deleteBoard(boardIdx);
+    }
+
+
+    @PostMapping("/comment/{boardIdx}")
+    public ResponseEntity<?> insertComment(@Validated BoardReqDto.InsertComment insertComment, Errors errors) {
+        //valid check
+        if (errors.hasErrors()) {
+            return response.validResponse(errors);
+        }
+        return boardService.insertComment(insertComment);
+    }
+
+    @PatchMapping("/comment/{commentIdx}")
+    public ResponseEntity<?> updateComment(@PathVariable Long commentIdx,
+                                           @Validated BoardReqDto.UpdateComment updateComment, Errors errors) {
+        //valid check
+        if (errors.hasErrors()) {
+            return response.validResponse(errors);
+        }
+        return boardService.updateComment(commentIdx, updateComment);
+    }
+
+    @DeleteMapping("/comment/{commentIdx}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentIdx) {
+        return boardService.deleteComment(commentIdx);
     }
 }

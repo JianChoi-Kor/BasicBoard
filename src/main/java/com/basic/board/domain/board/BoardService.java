@@ -25,7 +25,7 @@ public class BoardService {
         return null;
     }
 
-    public BoardResDto.BoardForDetail boardDetail(Long boardIdx) {
+    public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
         return null;
     }
 
@@ -34,6 +34,18 @@ public class BoardService {
     }
 
     public ResponseEntity<?> deleteBoard(Long boardIdx) {
+        return null;
+    }
+
+    public ResponseEntity<?> insertComment(BoardReqDto.InsertComment input) {
+        return null;
+    }
+
+    public ResponseEntity<?> updateComment(Long commentIdx, BoardReqDto.UpdateComment input) {
+        return null;
+    }
+
+    public ResponseEntity<?> deleteComment(Long commentIdx) {
         return null;
     }
 }
