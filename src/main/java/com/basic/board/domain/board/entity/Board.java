@@ -33,7 +33,7 @@ public class Board extends BaseDateEntity {
 
     //작성자
     @ManyToOne(targetEntity = Member.class, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idx")
+    @JoinColumn(name = "member_idx")
     private Member writer;
 
     //삭제 여부

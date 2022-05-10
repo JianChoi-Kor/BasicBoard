@@ -3,7 +3,9 @@ package com.basic.board.domain.board;
 import com.basic.board.domain.PageRequest;
 import com.basic.board.domain.board.repository.BoardRepository;
 import com.basic.board.domain.board.repository.CommentRepository;
-import com.basic.board.domain.board.repository.LikeRepository;
+import com.basic.board.domain.board.repository.LikedRepository;
+import com.basic.board.domain.member.entity.Member;
+import com.basic.board.util.Common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class BoardService {
 
+    private final Common common;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-    private final LikeRepository likeRepository;
+    private final LikedRepository likedRepository;
 
     public ResponseEntity<?> insertBoard(BoardReqDto.InsertBoard input) {
+        Member member = common.getMember();
+
+
+
+
         return null;
     }
 

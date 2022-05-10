@@ -1,6 +1,5 @@
 package com.basic.board.domain.board.entity;
 
-import com.basic.board.domain.member.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,7 +7,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Like {
+public class Liked {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -33,7 +33,7 @@ public class Comment extends BaseDateEntity {
 
     //댓글 작성자
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idx")
+    @JoinColumn(name = "member_idx", nullable = false)
     private Member writer;
 
     //삭제 여부
