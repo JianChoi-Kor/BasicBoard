@@ -17,14 +17,12 @@ public class GlobalExceptionHandler {
 
     private final Response response;
 
-    @ResponseBody
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<?> handleUsernameNotFoundException(final UsernameNotFoundException e) {
         log.error(e.getMessage());
         return response.fail(e.getMessage());
     }
 
-    @ResponseBody
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<?> dataAccessExceptionHandler(DataAccessException e) {
         log.error(e.getMessage());
