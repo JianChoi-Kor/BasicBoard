@@ -1,6 +1,7 @@
 package com.basic.board.domain.board;
 
 import com.basic.board.domain.PageRequest;
+import com.basic.board.domain.board.entity.Board;
 import com.basic.board.domain.board.repository.BoardRepository;
 import com.basic.board.domain.board.repository.CommentRepository;
 import com.basic.board.domain.board.repository.LikedRepository;
@@ -23,13 +24,20 @@ public class BoardService {
     public ResponseEntity<?> insertBoard(BoardReqDto.InsertBoard input) {
         Member member = common.getMember();
 
-
-
-
+        Board board = Board.builder()
+                .title(input.getTitle())
+                .contents(input.getContents())
+                .views(0L)
+                .writer(member)
+                .deleteYn(false)
+                .build();
+        boardRepository.save(board);
         return null;
     }
 
     public PageImpl<BoardResDto.BoardForList> boardList(PageRequest pageRequest) {
+        PageImpl<BoardResDto.BoardForList> boardList = boardRepository.getBoardList(pageRequest);
+
         return null;
     }
 
