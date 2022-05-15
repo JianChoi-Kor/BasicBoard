@@ -9,6 +9,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/board")
 @RestController
@@ -27,8 +30,29 @@ public class BoardController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> boardList(PageRequest pageRequest) {
-        PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(pageRequest);
+    public ResponseEntity<?> boardList(@Validated BoardReqDto.SearchBoard search, Errors searchErrors,
+                                       PageRequest pageRequest) {
+        //valid check
+        if (searchErrors.hasErrors()) {
+            return response.validResponse(searchErrors);
+        }
+
+        //type && keyword check
+        if ((search.getKeyword() != null && !search.getKeyword().equals("")) && search.getType() == null) {
+            return response.fail("잘못된 검색 조건입니다.");
+        }
+        if (search.getType() != null && search.getKeyword() == null) {
+            return response.fail("잘못된 검색 조건입니다.");
+        }
+        List<String> typeList = Arrays.asList("title", "contents", "titleAndContents");
+        if (!typeList.contains(search.getType())) {
+            return response.fail("잘못된 검색 조건입니다.");
+        }
+
+        //startDate && endDate check
+
+
+        PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(search, pageRequest);
         return response.success(boardList);
     }
 

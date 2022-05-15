@@ -94,20 +94,16 @@
 			<version>2.5.2</version>
 		</dependency>
 
-		<!-- QueryDSL APT Config -->
+		<!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-apt -->
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl.version}</version>
-			<scope>provided</scope>
 		</dependency>
-		<!-- QueryDSL JPA Config -->
+		<!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa -->
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
-			<version>${querydsl.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>

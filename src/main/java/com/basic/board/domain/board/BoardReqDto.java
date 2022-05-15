@@ -2,6 +2,8 @@ package com.basic.board.domain.board;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Service;
+import reactor.util.annotation.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -52,5 +54,22 @@ public class BoardReqDto {
 
         @NotBlank(message = "내용은 필수 입력값입니다.")
         private String contents;
+    }
+
+    @Getter
+    @Service
+    public static class SearchBoard {
+
+        private String type;
+
+        private String keyword;
+
+        @Pattern(regexp = "^(19|20)\\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$", message = "잘못된 날짜 형식입니다.")
+        @Nullable
+        private String startDate;
+
+        @Pattern(regexp = "^(19|20)\\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$", message = "잘못된 날짜 형식입니다.")
+        @Nullable
+        private String endDate;
     }
 }
