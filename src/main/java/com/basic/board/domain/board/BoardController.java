@@ -51,7 +51,6 @@ public class BoardController {
 
         //startDate && endDate check
 
-
         PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(search, pageRequest);
         return response.success(boardList);
     }
