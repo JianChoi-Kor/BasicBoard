@@ -36,9 +36,7 @@ public class BoardService {
     }
 
     public PageImpl<BoardResDto.BoardForList> boardList(BoardReqDto.SearchBoard searchBoard, PageRequest pageRequest) {
-        PageImpl<BoardResDto.BoardForList> boardList = boardRepository.getBoardList(searchBoard, pageRequest);
-
-        return null;
+        return boardRepository.getBoardList(searchBoard, pageRequest);
     }
 
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {

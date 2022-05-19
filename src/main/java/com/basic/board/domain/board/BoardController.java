@@ -45,11 +45,9 @@ public class BoardController {
             return response.fail("잘못된 검색 조건입니다.");
         }
         List<String> typeList = Arrays.asList("title", "contents", "titleAndContents");
-        if (!typeList.contains(search.getType())) {
+        if (search.getType() !=  null && !typeList.contains(search.getType())) {
             return response.fail("잘못된 검색 조건입니다.");
         }
-
-        //startDate && endDate check
 
         PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(search, pageRequest);
         return response.success(boardList);

@@ -2,7 +2,6 @@ package com.basic.board.domain.board;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 import reactor.util.annotation.Nullable;
 
 import javax.validation.constraints.NotBlank;
@@ -57,9 +56,12 @@ public class BoardReqDto {
     }
 
     @Getter
-    @Service
+    @Setter
     public static class SearchBoard {
 
+        // 1: 제목, 2: 내용, 3: 제목 + 내용
+        @Pattern(regexp = "^(1|2|3)", message = "잘못된 검색 타입입니다.")
+        @Nullable
         private String type;
 
         private String keyword;
