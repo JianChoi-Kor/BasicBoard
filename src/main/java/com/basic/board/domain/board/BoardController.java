@@ -9,6 +9,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,6 +50,17 @@ public class BoardController {
         List<String> typeList = Arrays.asList("title", "contents", "titleAndContents");
         if (search.getType() !=  null && !typeList.contains(search.getType())) {
             return response.fail("잘못된 검색 조건입니다.");
+        }
+
+        //startDate, endDate check
+        if (search.getStartDate() != null && search.getEndDate() != null) {
+            //convert startDate, endDate
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime startDate = LocalDate.parse(search.getStartDate(), dateTimeFormatter).atStartOfDay();
+            LocalDateTime endDate = LocalDate.parse(search.getEndDate(), dateTimeFormatter).atTime(23, 59, 59);
+            if (startDate.isAfter(endDate)) {
+                return response.fail("잘못된 검색 조건입니다.");
+            }
         }
 
         PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(search, pageRequest);
