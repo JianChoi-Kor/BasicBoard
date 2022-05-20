@@ -47,7 +47,26 @@ public class BoardService {
     }
 
     public ResponseEntity<?> updateBoard(Long boardIdx, BoardReqDto.UpdateBoard input) {
-        return null;
+        Member member = common.getMember();
+
+        //board check
+        Board board = boardRepository.findByIdx(boardIdx);
+        if (board == null) {
+            return response.fail("해당하는 게시글이 존재하지 않습니다.");
+        }
+        if (!board.getWriter().getIdx().equals(member.getIdx())) {
+            return response.fail("잘못된 요청입니다.");
+        }
+        if (board.isDeleteYn()) {
+            return response.fail("삭제된 게시글은 수정할 수 없습니다.");
+        }
+
+        //update board
+        board.setTitle(input.getTitle());
+        board.setContents(input.getContents());
+        boardRepository.save(board);
+
+        return response.success("게시글이 수정되었습니다.");
     }
 
     public ResponseEntity<?> deleteBoard(Long boardIdx) {
