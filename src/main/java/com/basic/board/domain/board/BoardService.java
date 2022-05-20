@@ -70,7 +70,25 @@ public class BoardService {
     }
 
     public ResponseEntity<?> deleteBoard(Long boardIdx) {
-        return null;
+        Member member = common.getMember();
+
+        //board check
+        Board board = boardRepository.findByIdx(boardIdx);
+        if (board == null) {
+            return response.fail("해당하는 게시글이 존재하지 않습니다.");
+        }
+        if (!board.getWriter().getIdx().equals(member.getIdx())) {
+            return response.fail("잘못된 요청입니다.");
+        }
+        if (board.isDeleteYn()) {
+            return response.fail("잘못된 요청입니다.");
+        }
+
+        //delete board
+        board.setDeleteYn(true);
+        boardRepository.save(board);
+
+        return response.success("게시글이 삭제되었습니다.");
     }
 
     public ResponseEntity<?> insertComment(BoardReqDto.InsertComment input) {
