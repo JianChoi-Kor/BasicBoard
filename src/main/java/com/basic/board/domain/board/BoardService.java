@@ -132,6 +132,7 @@ public class BoardService {
             return response.fail("삭제된 댓글은 수정할 수 없습니다.");
         }
 
+        //update comment
         comment.setContents(input.getContents());
         commentRepository.save(comment);
 
@@ -139,6 +140,23 @@ public class BoardService {
     }
 
     public ResponseEntity<?> deleteComment(Long commentIdx) {
-        return null;
+        Member member = common.getMember();
+
+        Comment comment = commentRepository.findByIdx(commentIdx);
+        if (comment == null) {
+            return response.fail("해당하는 댓글이 존재하지 않습니다.");
+        }
+        if (!comment.getWriter().getIdx().equals(member.getIdx())) {
+            return response.fail("잘못된 요청입니다.");
+        }
+        if (comment.isDeleteYn()) {
+            return response.fail("잘못된 요청입니다.");
+        }
+
+        //delete comment
+        comment.setDeleteYn(true);
+        commentRepository.save(comment);
+
+        return response.success("댓글이 삭제되었습니다.");
     }
 }
