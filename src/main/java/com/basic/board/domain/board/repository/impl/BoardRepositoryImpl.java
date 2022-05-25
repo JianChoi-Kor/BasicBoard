@@ -5,6 +5,7 @@ import com.basic.board.domain.board.BoardReqDto;
 import com.basic.board.domain.board.BoardResDto;
 import com.basic.board.domain.board.entity.QBoard;
 import com.basic.board.domain.board.entity.QComment;
+import com.basic.board.domain.board.entity.QLiked;
 import com.basic.board.domain.board.repository.custom.BoardRepositoryCustom;
 import com.basic.board.domain.member.entity.QMember;
 import com.querydsl.core.BooleanBuilder;
@@ -26,10 +27,10 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     public BoardRepositoryImpl(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }
-
-    QMember member = QMember.member;
     QBoard board = QBoard.board;
-    QComment comment = QComment.comment;
+    QComment comment = new QComment("comment");
+    QComment subComment = new QComment("subComment");
+    QLiked liked = QLiked.liked;
 
     @Override
     public PageImpl<BoardResDto.BoardForList> getBoardList(BoardReqDto.SearchBoard searchBoard, PageRequest pageRequest) {
@@ -85,5 +86,10 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .fetch();
 
         return new PageImpl<>(results, pageable, count);
+    }
+
+    @Override
+    public BoardResDto.BoardDetail getBoardDetail(Long boardIdx) {
+        return null;
     }
 }

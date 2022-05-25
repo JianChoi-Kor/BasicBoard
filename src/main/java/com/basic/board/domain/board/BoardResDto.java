@@ -45,6 +45,17 @@ public class BoardResDto {
         private String writerName;
         private LocalDateTime createAt;
         private Long likeCount;
-        private List<CommentForBoardDetail> commentForBoardDetailList;
+        private List<SubCommentForBoardDetail> subCommentForBoardDetailList;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class SubCommentForBoardDetail {
+        private Long idx;
+        private String contents;
+        private String writerName;
+        private LocalDateTime createAt;
+        private Long likeCount;
     }
 }

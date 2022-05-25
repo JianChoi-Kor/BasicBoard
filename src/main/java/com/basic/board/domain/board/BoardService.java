@@ -43,8 +43,7 @@ public class BoardService {
     }
 
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
-
-        return null;
+        return boardRepository.getBoardDetail(boardIdx);
     }
 
     public ResponseEntity<?> updateBoard(Long boardIdx, BoardReqDto.UpdateBoard input) {

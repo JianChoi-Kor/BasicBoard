@@ -14,8 +14,8 @@ public class Liked {
     private Long idx;
 
     //게시글 고유 번호
-    @Column(name = "board_idx", nullable = false)
-    private Long boardIdx;
+    @Column(name = "comment_idx", nullable = false)
+    private Long commentIdx;
 
     //작성자 고유 번호
     @Column(name = "writer_idx", nullable = false)
