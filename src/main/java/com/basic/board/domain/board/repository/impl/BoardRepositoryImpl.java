@@ -7,9 +7,10 @@ import com.basic.board.domain.board.entity.QBoard;
 import com.basic.board.domain.board.entity.QComment;
 import com.basic.board.domain.board.entity.QLiked;
 import com.basic.board.domain.board.repository.custom.BoardRepositoryCustom;
-import com.basic.board.domain.member.entity.QMember;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.PageImpl;
@@ -27,10 +28,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     public BoardRepositoryImpl(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }
+
     QBoard board = QBoard.board;
     QComment comment = new QComment("comment");
     QComment subComment = new QComment("subComment");
-    QLiked liked = QLiked.liked;
+    QLiked liked = new QLiked("liked");
+    QLiked subLiked = new QLiked("subLiked");
 
     @Override
     public PageImpl<BoardResDto.BoardForList> getBoardList(BoardReqDto.SearchBoard searchBoard, PageRequest pageRequest) {
@@ -48,7 +51,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             //제목 + 내용
             else {
                 builder.and(board.title.contains(searchBoard.getKeyword())
-                                .or(board.contents.contains(searchBoard.getKeyword())));
+                        .or(board.contents.contains(searchBoard.getKeyword())));
             }
         }
 
@@ -90,6 +93,37 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public BoardResDto.BoardDetail getBoardDetail(Long boardIdx) {
-        return null;
+        return queryFactory.select(Projections.constructor(BoardResDto.BoardDetail.class,
+                        board.idx,
+                        board.title,
+                        board.contents,
+                        board.views,
+                        board.writer.nickname,
+                        board.createAt,
+                        ExpressionUtils.as(JPAExpressions.select(Projections.constructor(BoardResDto.CommentForBoardDetail.class,
+                                        comment.idx,
+                                        comment.contents,
+                                        comment.writer.nickname,
+                                        comment.createAt,
+                                        liked.idx.count(),
+                                        ExpressionUtils.as(JPAExpressions.select(Projections.constructor(BoardResDto.SubCommentForBoardDetail.class,
+                                                        subComment.idx,
+                                                        subComment.contents,
+                                                        subComment.writer.nickname,
+                                                        subComment.createAt,
+                                                        subLiked.idx.count()
+                                                ))
+                                                .from(subComment)
+                                                .join(comment).on(subComment.parentCommentIdx.eq(comment.idx))
+                                                .join(board).on(comment.boardIdx.eq(board.idx))
+                                                .where(board.idx.eq(boardIdx)), "subCommentForBoardDetailList")
+                                ))
+                                .from(comment)
+                                .join(board).on(comment.boardIdx.eq(board.idx))
+                                .where(board.idx.eq(boardIdx)), "commentForBoardDetailList")
+                ))
+                .from(board)
+                .where(board.idx.eq(boardIdx))
+                .fetchFirst();
     }
 }

@@ -89,7 +89,7 @@ public class BoardController {
     }
 
 
-    @PostMapping("/comment/{boardIdx}")
+    @PostMapping("/comment")
     public ResponseEntity<?> insertComment(@Validated BoardReqDto.InsertComment insertComment, Errors errors) {
         //valid check
         if (errors.hasErrors()) {

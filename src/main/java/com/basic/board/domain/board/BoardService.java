@@ -94,16 +94,30 @@ public class BoardService {
     public ResponseEntity<?> insertComment(BoardReqDto.InsertComment input) {
         Member member = common.getMember();
 
-        //상위 댓글
-        Comment parentComment = commentRepository.findByIdx(input.getCommentIdx());
-        if (parentComment == null) {
-            return response.fail("잘못된 요청입니다.");
+        //대댓글인 경우
+        if (input.getCommentIdx() != null && !input.getCommentIdx().equals("")) {
+            //상위 댓글
+            Comment parentComment = commentRepository.findByIdx(input.getCommentIdx());
+            if (parentComment == null) {
+                return response.fail("잘못된 요청입니다.");
+            }
+            if (parentComment.getParentCommentIdx() != null) {
+                return response.fail("잘못된 요청입니다.");
+            }
+            if (parentComment.isDeleteYn()) {
+                return response.fail("삭제된 댓글에는 댓글을 달 수 없습니다.");
+            }
         }
-        if (parentComment.getParentCommentIdx() != null) {
-            return response.fail("잘못된 요청입니다.");
-        }
-        if (parentComment.isDeleteYn()) {
-            return response.fail("삭제된 댓글에는 댓글을 달 수 없습니다.");
+        //댓글인 경우
+        else {
+            //게시글
+            Board board = boardRepository.findByIdx(input.getBoardIdx());
+            if (board == null) {
+                return response.fail("잘못된 요청입니다.");
+            }
+            if (board.isDeleteYn()) {
+                return response.fail("삭제된 게시글에는 댓글을 달 수 없습니다.");
+            }
         }
 
         //등록하는 댓글
