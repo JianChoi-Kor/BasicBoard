@@ -8,9 +8,7 @@ import com.basic.board.domain.board.entity.QComment;
 import com.basic.board.domain.board.entity.QLiked;
 import com.basic.board.domain.board.repository.custom.BoardRepositoryCustom;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.PageImpl;
@@ -93,37 +91,50 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public BoardResDto.BoardDetail getBoardDetail(Long boardIdx) {
-        return queryFactory.select(Projections.constructor(BoardResDto.BoardDetail.class,
-                        board.idx,
-                        board.title,
-                        board.contents,
-                        board.views,
-                        board.writer.nickname,
-                        board.createAt,
-                        ExpressionUtils.as(JPAExpressions.select(Projections.constructor(BoardResDto.CommentForBoardDetail.class,
-                                        comment.idx,
-                                        comment.contents,
-                                        comment.writer.nickname,
-                                        comment.createAt,
-                                        liked.idx.count(),
-                                        ExpressionUtils.as(JPAExpressions.select(Projections.constructor(BoardResDto.SubCommentForBoardDetail.class,
-                                                        subComment.idx,
-                                                        subComment.contents,
-                                                        subComment.writer.nickname,
-                                                        subComment.createAt,
-                                                        subLiked.idx.count()
-                                                ))
-                                                .from(subComment)
-                                                .join(comment).on(subComment.parentCommentIdx.eq(comment.idx))
-                                                .join(board).on(comment.boardIdx.eq(board.idx))
-                                                .where(board.idx.eq(boardIdx)), "subCommentForBoardDetailList")
-                                ))
-                                .from(comment)
-                                .join(board).on(comment.boardIdx.eq(board.idx))
-                                .where(board.idx.eq(boardIdx)), "commentForBoardDetailList")
-                ))
-                .from(board)
-                .where(board.idx.eq(boardIdx))
-                .fetchFirst();
+        //board
+        BoardResDto.BoardDetail boardDetail =
+                queryFactory.select(Projections.constructor(BoardResDto.BoardDetail.class,
+                                board.idx,
+                                board.title,
+                                board.contents,
+                                board.views,
+                                board.writer.nickname,
+                                board.createAt))
+                        .from(board)
+                        .where(board.idx.eq(boardIdx))
+                        .fetchFirst();
+
+        //comment
+        List<BoardResDto.CommentForBoardDetail> commentForBoardDetailList =
+                queryFactory.select(Projections.constructor(BoardResDto.CommentForBoardDetail.class,
+                        comment.idx,
+                        comment.contents,
+                        comment.writer.nickname,
+                        comment.createAt,
+                        liked.idx.count()))
+                        .from(comment)
+                        .join(board).on(comment.boardIdx.eq(board.idx))
+                        .leftJoin(liked).on(comment.idx.eq(liked.commentIdx))
+                        .where(board.idx.eq(boardIdx).and(comment.parentCommentIdx.isNull()))
+                        .groupBy(comment.idx)
+                        .fetch();
+
+        //subComment
+        List<BoardResDto.SubCommentForBoardDetail> subCommentForBoardDetailList =
+                queryFactory.select(Projections.constructor(BoardResDto.SubCommentForBoardDetail.class,
+                        subComment.idx,
+                        subComment.contents,
+                        subComment.writer.nickname,
+                        subComment.createAt,
+                        subLiked.idx.count()))
+                        .from(subComment)
+                        .join(comment).on(subComment.parentCommentIdx.eq(comment.idx))
+                        .join(board).on(comment.boardIdx.eq(board.idx))
+                        .leftJoin(subLiked).on(subComment.idx.eq(subLiked.commentIdx))
+                        .where(board.idx.eq(boardIdx).and(subComment.parentCommentIdx.isNotNull()))
+                        .groupBy(subComment.idx)
+                        .fetch();
+
+        return null;
     }
 }

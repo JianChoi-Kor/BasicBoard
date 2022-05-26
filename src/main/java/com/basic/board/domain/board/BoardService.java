@@ -43,6 +43,8 @@ public class BoardService {
     }
 
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
+
+
         return boardRepository.getBoardDetail(boardIdx);
     }
 
