@@ -71,6 +71,7 @@ public class BoardResDto {
     @Getter
     public static class SubCommentForBoardDetail {
         private Long idx;
+        private Long parentCommentIdx;
         private String contents;
         private String writerName;
         private LocalDateTime createAt;

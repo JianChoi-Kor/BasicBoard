@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
@@ -117,12 +118,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         .leftJoin(liked).on(comment.idx.eq(liked.commentIdx))
                         .where(board.idx.eq(boardIdx).and(comment.parentCommentIdx.isNull()))
                         .groupBy(comment.idx)
+                        .orderBy(comment.createAt.asc())
                         .fetch();
 
         //subComment
         List<BoardResDto.SubCommentForBoardDetail> subCommentForBoardDetailList =
                 queryFactory.select(Projections.constructor(BoardResDto.SubCommentForBoardDetail.class,
                         subComment.idx,
+                        subComment.parentCommentIdx,
                         subComment.contents,
                         subComment.writer.nickname,
                         subComment.createAt,
@@ -133,8 +136,22 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         .leftJoin(subLiked).on(subComment.idx.eq(subLiked.commentIdx))
                         .where(board.idx.eq(boardIdx).and(subComment.parentCommentIdx.isNotNull()))
                         .groupBy(subComment.idx)
+                        .orderBy(subComment.createAt.asc())
                         .fetch();
 
-        return null;
+        //각각의 댓글에 대댓글 넣는 작업
+        for (BoardResDto.CommentForBoardDetail commentForBoardDetail : commentForBoardDetailList) {
+            List<BoardResDto.SubCommentForBoardDetail> eachSubCommentForBoardDetailList = new ArrayList<>();
+            //대댓글 분류 작업
+            for (BoardResDto.SubCommentForBoardDetail subCommentForBoardDetail : subCommentForBoardDetailList) {
+                if (subCommentForBoardDetail.getParentCommentIdx().equals(commentForBoardDetail.getIdx())) {
+                    eachSubCommentForBoardDetailList.add(subCommentForBoardDetail);
+                }
+            }
+            commentForBoardDetail.setSubCommentForBoardDetailList(eachSubCommentForBoardDetailList);
+        }
+        //게시글에 댓글 리스트 추가
+        boardDetail.setCommentForBoardDetailList(commentForBoardDetailList);
+        return boardDetail;
     }
 }
