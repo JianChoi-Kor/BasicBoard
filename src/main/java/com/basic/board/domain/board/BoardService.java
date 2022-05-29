@@ -1,6 +1,5 @@
 package com.basic.board.domain.board;
 
-import com.basic.board.advice.Response;
 import com.basic.board.domain.PageRequest;
 import com.basic.board.domain.board.entity.Board;
 import com.basic.board.domain.board.entity.Comment;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class BoardService {
 
     private final Common common;
-    private final Response response;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final LikedRepository likedRepository;

@@ -1,6 +1,5 @@
 package com.basic.board.domain.board;
 
-import com.basic.board.advice.Response;
 import com.basic.board.domain.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -20,7 +19,6 @@ import java.util.List;
 @RestController
 public class BoardController {
 
-    private final Response response;
     private final BoardService boardService;
 
     @PostMapping("")
