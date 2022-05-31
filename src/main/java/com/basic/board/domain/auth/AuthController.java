@@ -1,5 +1,6 @@
 package com.basic.board.domain.auth;
 
+import com.basic.board.advice.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class AuthController {
 
+    private final Response response;
     private final AuthService authService;
 
     @PostMapping("/signup")

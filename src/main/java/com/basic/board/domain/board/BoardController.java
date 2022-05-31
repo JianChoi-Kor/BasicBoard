@@ -1,10 +1,13 @@
 package com.basic.board.domain.board;
 
 import com.basic.board.domain.PageRequest;
+import com.basic.board.domain.board.entity.Board;
 import com.basic.board.util.Helper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -30,36 +33,41 @@ public class BoardController {
     }
 
     @PostMapping("/write")
-    public String insertBoard(@Validated BoardReqDto.InsertBoard input, Errors errors) {
+    public ResponseEntity<?> insertBoard(@Validated BoardReqDto.InsertBoard input, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
             //first error
             FieldError fieldError = errors.getFieldErrors().get(0);
             Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
+            return null;
         }
         return boardService.insertBoard(input);
     }
 
     @GetMapping("/list")
     public String boardList(@Validated BoardReqDto.SearchBoard search, Errors searchErrors,
-                                       PageRequest pageRequest) {
+                                       PageRequest pageRequest, Model model) {
         //valid check
         if (searchErrors.hasErrors()) {
             //first error
             FieldError fieldError = searchErrors.getFieldErrors().get(0);
             Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
+            return null;
         }
 
         //type && keyword check
         if ((search.getKeyword() != null && !search.getKeyword().equals("")) && search.getType() == null) {
             Helper.errorMsg("잘못된 검색 조건입니다.");
+            return null;
         }
         if (search.getType() != null && search.getKeyword() == null) {
             Helper.errorMsg("잘못된 검색 조건입니다.");
+            return null;
         }
         List<String> typeList = Arrays.asList("title", "contents", "titleAndContents");
         if (search.getType() !=  null && !typeList.contains(search.getType())) {
             Helper.errorMsg("잘못된 검색 조건입니다.");
+            return null;
         }
 
         //startDate, endDate check
@@ -70,44 +78,61 @@ public class BoardController {
             LocalDateTime endDate = LocalDate.parse(search.getEndDate(), dateTimeFormatter).atTime(23, 59, 59);
             if (startDate.isAfter(endDate)) {
                 Helper.errorMsg("잘못된 검색 조건입니다.");
+                return null;
             }
         }
 
         PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(search, pageRequest);
+        model.addAttribute(boardList);
+
         return "page/boardMain";
     }
 
     @GetMapping("/{boardIdx}")
-    public String boardDetail(@PathVariable Long boardIdx) {
-        BoardResDto.BoardDetail boardForDetail = boardService.boardDetail(boardIdx);
+    public String boardDetail(@PathVariable Long boardIdx, Model model) {
+        BoardResDto.BoardDetail boardDetail = boardService.boardDetail(boardIdx);
+        if (boardDetail == null) {
+            Helper.errorMsg("잘못된 요청입니다.");
+            return null;
+        }
+        model.addAttribute(boardDetail);
+
         return "page/boardDetail";
     }
 
     @GetMapping("/update/{boardIdx}")
-    public String updateBoard(@PathVariable Long boardIdx) {
-        return boardService.updateBoard(boardIdx);
+    public String updateBoard(@PathVariable Long boardIdx, Model model) {
+        Board board = boardService.updateBoard(boardIdx);
+        if (board == null) {
+            Helper.errorMsg("잘못된 요청입니다.");
+            return null;
+        }
+        model.addAttribute(board);
+
+        return "page/boardWrite";
     }
 
     @PatchMapping("/update/{boardIdx}")
-    public String updateBoard(@PathVariable Long boardIdx,
+    public ResponseEntity<?> updateBoard(@PathVariable Long boardIdx,
                                          @Validated BoardReqDto.UpdateBoard input, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
             //first error
             FieldError fieldError = errors.getFieldErrors().get(0);
             Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
+            return null;
         }
         return boardService.updateBoard(boardIdx, input);
     }
 
     @DeleteMapping("/{boardIdx}")
-    public String deleteBoard(@PathVariable Long boardIdx) {
+    public ResponseEntity<?> deleteBoard(@PathVariable Long boardIdx) {
         return boardService.deleteBoard(boardIdx);
     }
 
 
     @PostMapping("/comment")
-    public String insertComment(@Validated BoardReqDto.InsertComment insertComment, Errors errors) {
+    public ResponseEntity<?> insertComment(@Validated BoardReqDto.InsertComment insertComment, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
             //first error
@@ -118,7 +143,7 @@ public class BoardController {
     }
 
     @PatchMapping("/comment/{commentIdx}")
-    public String updateComment(@PathVariable Long commentIdx,
+    public ResponseEntity<?> updateComment(@PathVariable Long commentIdx,
                                            @Validated BoardReqDto.UpdateComment updateComment, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
@@ -130,7 +155,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/comment/{commentIdx}")
-    public String deleteComment(@PathVariable Long commentIdx) {
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentIdx) {
         return boardService.deleteComment(commentIdx);
     }
 }

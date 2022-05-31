@@ -1,5 +1,6 @@
 package com.basic.board.domain.auth;
 
+import com.basic.board.advice.Response;
 import com.basic.board.domain.auth.jwt.JwtTokenProvider;
 import com.basic.board.domain.auth.security.SecurityUtil;
 import com.basic.board.domain.member.entity.Member;
@@ -29,6 +30,7 @@ public class AuthService {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_TYPE = "Bearer";
 
+    private final Response response;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;

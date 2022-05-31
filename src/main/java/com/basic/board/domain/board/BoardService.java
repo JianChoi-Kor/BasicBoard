@@ -1,29 +1,31 @@
 package com.basic.board.domain.board;
 
+import com.basic.board.advice.Response;
 import com.basic.board.domain.PageRequest;
 import com.basic.board.domain.board.entity.Board;
 import com.basic.board.domain.board.entity.Comment;
 import com.basic.board.domain.board.repository.BoardRepository;
 import com.basic.board.domain.board.repository.CommentRepository;
-import com.basic.board.domain.board.repository.LikedRepository;
 import com.basic.board.domain.member.entity.Member;
 import com.basic.board.util.Common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class BoardService {
 
+    private final Response response;
     private final Common common;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-    private final LikedRepository likedRepository;
 
-    public String insertBoard(BoardReqDto.InsertBoard input) {
+    public ResponseEntity<?> insertBoard(BoardReqDto.InsertBoard input) {
         Member member = common.getMember();
 
+        //board
         Board board = Board.builder()
                 .title(input.getTitle())
                 .contents(input.getContents())
@@ -32,7 +34,8 @@ public class BoardService {
                 .deleteYn(false)
                 .build();
         boardRepository.save(board);
-        return "page/boardDetail";
+
+        return response.success("게시글이 등록되었습니다.");
     }
 
     public PageImpl<BoardResDto.BoardForList> boardList(BoardReqDto.SearchBoard searchBoard, PageRequest pageRequest) {
@@ -40,17 +43,26 @@ public class BoardService {
     }
 
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
-
-
-        return boardRepository.getBoardDetail(boardIdx);
+        boardRepository.updateBoardViews(boardIdx);
+        BoardResDto.BoardDetail boardDetail = boardRepository.getBoardDetail(boardIdx);
+        return boardDetail;
     }
 
-    public String updateBoard(Long boardIdx) {
+    public Board updateBoard(Long boardIdx) {
+        Member member = common.getMember();
 
-        return "page/boardWrite";
+        //board
+        Board board = boardRepository.findByIdx(boardIdx);
+        if (board.isDeleteYn()) {
+            return null;
+        }
+        if (!board.getWriter().getIdx().equals(member.getIdx())) {
+            return null;
+        }
+        return board;
     }
 
-    public String updateBoard(Long boardIdx, BoardReqDto.UpdateBoard input) {
+    public ResponseEntity<?> updateBoard(Long boardIdx, BoardReqDto.UpdateBoard input) {
         Member member = common.getMember();
 
         //board check
@@ -70,10 +82,10 @@ public class BoardService {
         board.setContents(input.getContents());
         boardRepository.save(board);
 
-        return "page/boardDetail";
+        return response.success("게시글이 수정되었습니다.");
     }
 
-    public String deleteBoard(Long boardIdx) {
+    public ResponseEntity<?> deleteBoard(Long boardIdx) {
         Member member = common.getMember();
 
         //board check
@@ -92,14 +104,14 @@ public class BoardService {
         board.setDeleteYn(true);
         boardRepository.save(board);
 
-        return "page/boardMain";
+        return response.success("게시글이 삭제되었습니다.");
     }
 
-    public String insertComment(BoardReqDto.InsertComment input) {
+    public ResponseEntity<?> insertComment(BoardReqDto.InsertComment input) {
         Member member = common.getMember();
 
         //대댓글인 경우
-        if (input.getCommentIdx() != null && !input.getCommentIdx().equals("")) {
+        if (input.getCommentIdx() != null) {
             //상위 댓글
             Comment parentComment = commentRepository.findByIdx(input.getCommentIdx());
             if (parentComment == null) {
@@ -136,7 +148,7 @@ public class BoardService {
         return response.success("댓글이 등록되었습니다.");
     }
 
-    public String updateComment(Long commentIdx, BoardReqDto.UpdateComment input) {
+    public ResponseEntity<?> updateComment(Long commentIdx, BoardReqDto.UpdateComment input) {
         Member member = common.getMember();
 
         Comment comment = commentRepository.findByIdx(commentIdx);
@@ -157,7 +169,7 @@ public class BoardService {
         return response.success("댓글이 수정되었습니다.");
     }
 
-    public String deleteComment(Long commentIdx) {
+    public ResponseEntity<?> deleteComment(Long commentIdx) {
         Member member = common.getMember();
 
         Comment comment = commentRepository.findByIdx(commentIdx);

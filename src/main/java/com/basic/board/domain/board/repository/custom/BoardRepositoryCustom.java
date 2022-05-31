@@ -9,4 +9,5 @@ public interface BoardRepositoryCustom {
     PageImpl<BoardResDto.BoardForList> getBoardList(BoardReqDto.SearchBoard searchBoard, PageRequest pageRequest);
 
     BoardResDto.BoardDetail getBoardDetail(Long boardIdx);
+    void updateBoardViews(Long boardIdx);
 }

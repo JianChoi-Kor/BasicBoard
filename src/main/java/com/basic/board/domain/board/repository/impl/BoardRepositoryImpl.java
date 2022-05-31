@@ -14,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -153,5 +154,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         //게시글에 댓글 리스트 추가
         boardDetail.setCommentForBoardDetailList(commentForBoardDetailList);
         return boardDetail;
+    }
+
+    @Transactional
+    @Override
+    public void updateBoardViews(Long boardIdx) {
+        queryFactory.update(board)
+                .where(board.idx.eq(boardIdx))
+                .set(board.views, board.views.add(1))
+                .execute();
     }
 }
