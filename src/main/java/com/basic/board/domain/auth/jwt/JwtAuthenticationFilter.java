@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_TYPE = "Bearer";
@@ -32,13 +33,14 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private List<String> skipPath;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        System.out.println("filter 실행");
+
         //0. skipPath 에 등록된 uri 인 경우 통과
         String uri = request.getRequestURI();
         if (skipPath.contains(uri)) {
+            System.out.println("통과 " + uri);
             filterChain.doFilter(request, response);
             return;
         }
@@ -58,6 +60,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
         //3. 토큰이 없거나 잘못된 토큰인 경우
         else {
+            System.out.println("실패 " + request.getRequestURI());
             RequestDispatcher requestDispatcher = request.getRequestDispatcher("/api/auth/fail");
             request.setAttribute("msg", "Unauthorized");
             requestDispatcher.forward(request, response);

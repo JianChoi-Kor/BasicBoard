@@ -13,6 +13,6 @@ public class MainController {
     @GetMapping("")
     public String main() {
         System.out.println("main page");
-        return "page/sign-in";
+        return "page/main";
     }
 }
