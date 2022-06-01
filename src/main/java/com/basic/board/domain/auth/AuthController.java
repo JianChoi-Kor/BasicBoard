@@ -2,7 +2,6 @@ package com.basic.board.domain.auth;
 
 import com.basic.board.advice.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -53,8 +52,8 @@ public class AuthController {
     }
 
     @RequestMapping("/fail")
-    public ResponseEntity<?> loginFail(HttpServletRequest request) {
+    public String loginFail(HttpServletRequest request) {
         String msg = (String) request.getAttribute("msg");
-        return response.fail(msg, HttpStatus.UNAUTHORIZED);
+        return "page/fail";
     }
 }

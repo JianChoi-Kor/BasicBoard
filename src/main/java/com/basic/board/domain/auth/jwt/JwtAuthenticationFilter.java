@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_TYPE = "Bearer";
@@ -32,15 +32,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${filter.skip.paths}")
     private List<String> skipPath;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    //Request Header 에서 토큰 정보 추출
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE)) {
+            //'Bearer ' 공백까지 총 7자리
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 
-        System.out.println("filter 실행");
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         //0. skipPath 에 등록된 uri 인 경우 통과
         String uri = request.getRequestURI();
         if (skipPath.contains(uri)) {
-            System.out.println("통과 " + uri);
             filterChain.doFilter(request, response);
             return;
         }
@@ -58,24 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-        //3. 토큰이 없거나 잘못된 토큰인 경우
-        else {
-            System.out.println("실패 " + request.getRequestURI());
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/api/auth/fail");
-            request.setAttribute("msg", "Unauthorized");
-            requestDispatcher.forward(request, response);
-            return;
-        }
-        filterChain.doFilter(request, response);
-    }
 
-    //Request Header 에서 토큰 정보 추출
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE)) {
-            //'Bearer ' 공백까지 총 7자리
-            return bearerToken.substring(7);
-        }
-        return null;
+        filterChain.doFilter(request, response);
     }
 }
