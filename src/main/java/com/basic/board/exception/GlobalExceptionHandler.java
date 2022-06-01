@@ -27,10 +27,4 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage());
         return "page/error-500";
     }
-
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public String noHandlerFoundException(NoHandlerFoundException e) {
-        log.error(e.getMessage());
-        return "page/error-404";
-    }
 }

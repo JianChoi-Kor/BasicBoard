@@ -6,9 +6,11 @@ function signin_action() {
     if (email_elem.value === '') {
         email_elem.focus();
         alert('이메일을 입력해주세요.');
+        return;
     } else if (password_elem.value === '') {
         password_elem.focus();
         alert('비밀번호를 입력해주세요.');
+        return;
     }
 
     var params = {
@@ -35,6 +37,7 @@ function signin_action() {
                     password_elem.focus();
                 }
                 alert(result.error[0].message);
+                return;
             }
         }
         //성공
@@ -49,5 +52,6 @@ function signin_action() {
     })
     .fail(function() {
         alert('요청에 실패했습니다.');
+        return;
     })
 }

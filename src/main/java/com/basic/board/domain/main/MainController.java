@@ -12,16 +12,6 @@ public class MainController {
 
     @GetMapping("")
     public String main() {
-        return "page/sign-in";
-    }
-
-    @GetMapping("404")
-    public String notFound() {
-        return "page/error-404";
-    }
-
-    @GetMapping("500")
-    public String serverError() {
-        return "page/error-500";
+        return "page/board-main";
     }
 }
