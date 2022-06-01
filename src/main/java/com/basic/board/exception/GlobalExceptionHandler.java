@@ -5,14 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ResponseBody
     @ExceptionHandler(UsernameNotFoundException.class)
     public void handleUsernameNotFoundException(final UsernameNotFoundException e) {
         log.error(e.getMessage());
@@ -20,8 +23,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public void dataAccessExceptionHandler(DataAccessException e) {
+    public String dataAccessExceptionHandler(DataAccessException e) {
         log.error(e.getMessage());
-        Helper.errorMsg("DataAccessException");
+        return "page/error-500";
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public String noHandlerFoundException(NoHandlerFoundException e) {
+        log.error(e.getMessage());
+        return "page/error-404";
     }
 }
