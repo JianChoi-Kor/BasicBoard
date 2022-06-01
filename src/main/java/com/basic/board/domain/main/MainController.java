@@ -17,11 +17,11 @@ public class MainController {
 
     @GetMapping("404")
     public String notFound() {
-        return "page/not-found";
+        return "page/error-404";
     }
 
     @GetMapping("500")
     public String serverError() {
-        return "page/server-error";
+        return "page/error-500";
     }
 }

@@ -206,3 +206,7 @@
 		.m-b-sm {
 			margin-bottom: 10px;
 		}
+
+		.board_pagination {
+            justify-content: center;
+		}
