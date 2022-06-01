@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/board")
+@RequestMapping("/board")
 @Controller
 public class BoardController {
 
@@ -44,7 +44,7 @@ public class BoardController {
         return boardService.insertBoard(input);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/main")
     public String boardList(@Validated BoardReqDto.SearchBoard search, Errors searchErrors,
                                        PageRequest pageRequest, Model model) {
         //valid check
@@ -85,7 +85,7 @@ public class BoardController {
         PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(search, pageRequest);
         model.addAttribute(boardList);
 
-        return "page/boardMain";
+        return "page/board-main";
     }
 
     @GetMapping("/{boardIdx}")

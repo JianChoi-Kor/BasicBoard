@@ -80,11 +80,14 @@
     </style>
     <!-- signin css -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/signin.css}">
+
+    <!-- signin js -->
+    <script type="text/javascript" th:src="@{/js/signin.js}"></script>
 </head>
 
 <body class="text-center">
     <main class="form-signin w-100 m-auto">
-        <form>
+        <form id="signin">
             <img class="mb-4" th:src="@{/images/b.png}" alt="" width="72" height="62">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
@@ -102,8 +105,8 @@
                     <input type="checkbox" value="remember-me"> Remember me
                 </label>
             </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-            <p class="mt-5 underline"><a href="https://naver.com">Skip Sign in</a></p>
+            <button class="w-100 btn btn-lg btn-primary" type="button" onclick="signin_action()">Sign in</button>
+            <p class="mt-5 underline"><a href="http://localhost:9111/board/main">Skip Sign in</a></p>
             <p class="mt-5 mb-3 text-muted">&copy; 2022-06</p>
         </form>
     </main>

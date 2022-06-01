@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RestController
 public class AuthController {
 
@@ -28,13 +29,14 @@ public class AuthController {
         return authService.signUp(signUp);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Validated AuthReqDto.Login login, Errors errors) {
+    @PostMapping("/signin")
+    public ResponseEntity<?> signIn(@RequestBody @Validated AuthReqDto.Login login, Errors errors) {
+        System.out.println("login");
         //valid check
         if (errors.hasErrors()) {
             return response.validResponse(errors);
         }
-        return authService.login(login);
+        return authService.signIn(login);
     }
 
     @PostMapping("/reissue")
