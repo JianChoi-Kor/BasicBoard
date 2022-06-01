@@ -1,3 +1,15 @@
+
+function set_cookie(name, value, unixTime) {
+    var date = new Date();
+    date.setTime(date.getTime() + unixTime);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+}
+
+function get_cookie(name) {
+    var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return value? value[2] : null;
+}
+
 function signin_action() {
 
     var email_elem = document.querySelector('#floatingInput');
@@ -26,6 +38,7 @@ function signin_action() {
         contentType: 'application/json;charset=utf-8'
     })
     .done(function(result) {
+        console.log(result);
         //실패
         if (result.state == 400) {
             if (result.error.length > 0) {
@@ -46,8 +59,9 @@ function signin_action() {
             var refreshToken = result.data.grantType + ' ' + result.data.refreshToken;
             var refreshTokenExpirationTime = result.data.refreshTokenExpirationTime;
 
-            console.log(accessToken);
-            console.log(refreshToken);
+            //token setCookie
+            set_cookie("accessToken", accessToken, 1800000);
+            set_cookie("refreshToken", refreshToken, refreshTokenExpirationTime);
         }
     })
     .fail(function() {
@@ -55,3 +69,5 @@ function signin_action() {
         return;
     })
 }
+
+console.log(get_cookie("accessToken"));
