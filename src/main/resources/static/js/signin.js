@@ -69,5 +69,3 @@ function signin_action() {
         return;
     })
 }
-
-console.log(get_cookie("accessToken"));
