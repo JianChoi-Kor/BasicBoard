@@ -2,7 +2,7 @@
 function set_cookie(name, value, unixTime) {
     var date = new Date();
     date.setTime(date.getTime() + unixTime);
-    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+    document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';expires=' + date.toUTCString() + ';path=/';
 }
 
 function get_cookie(name) {
@@ -69,3 +69,6 @@ function signin_action() {
         return;
     })
 }
+
+get_cookie("accessToken");
+get_cookie("refreshToken");
