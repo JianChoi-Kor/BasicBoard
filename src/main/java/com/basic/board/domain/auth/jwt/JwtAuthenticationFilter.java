@@ -29,9 +29,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate redisTemplate;
 
-    @Value("${filter.skip.paths}")
-    private List<String> skipPath;
-
     //Request Header 에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
@@ -47,17 +44,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        //0. skipPath 에 등록된 uri 인 경우 통과
-        String uri = request.getRequestURI();
-        if (skipPath.contains(uri)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        //1. Request Header 에서 JWT 토큰 추출
+        //Request Header 에서 JWT 토큰 추출
         String token = resolveToken(request);
 
-        //2. validateToken 으로 토큰 유효성 검사
+        //validateToken 으로 토큰 유효성 검사
         if (token != null && jwtTokenProvider.validateToken(token)) {
             //Redis 에 해당 accessToken logout 여부 확인
             String isLogout = (String) redisTemplate.opsForValue().get(token);
@@ -67,7 +57,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }

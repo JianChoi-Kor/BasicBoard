@@ -29,7 +29,7 @@ public class BoardController {
     //insert, update page
     @GetMapping("/write")
     public String insertBoard() {
-        return "page/boardWrite";
+        return boardService.insertBoard();
     }
 
     @PostMapping("/write")

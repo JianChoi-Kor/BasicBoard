@@ -1,0 +1,87 @@
+
+var memberName;
+
+function get_cookie(name) {
+    var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return value? value[2] : null;
+}
+
+function set_cookie(name, value, unixTime) {
+    var date = new Date();
+    date.setTime(date.getTime() + unixTime);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+}
+
+function auth_info() {
+    var accessToken = get_cookie("accessToken");
+    if (accessToken == null) {
+        document.getElementById('header_member_name_a').hidden = true;
+        document.getElementById('header_logout_li').hidden = true;
+        return null;
+    }
+
+    $.ajaxSetup({
+        headers: { 'Authorization': accessToken }
+    });
+
+    $.ajax({
+        url: '/auth',
+        method: 'GET'
+    })
+    .done(function(result) {
+        memberName = result.data;
+        if (memberName != null) {
+            document.getElementById('header_signin_li').hidden = true;
+            document.getElementById('footer_signin_li').hidden = true;
+
+            var headerMemberName = document.getElementById('header_member_name_a');
+            headerMemberName.hidden = false;
+            headerMemberName.innerText = '"' + memberName + '" 접속 중' ;
+
+            document.getElementById('header_logout_li').hidden = false;
+        }
+    })
+    .fail(function() {
+        console.log("auth_info fail");
+    })
+}
+
+auth_info();
+
+function logout_action() {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+        var accessToken = get_cookie("accessToken");
+        if (accessToken == null) {
+            return null;
+        }
+
+        $.ajaxSetup({
+            headers: { 'Authorization': accessToken }
+        });
+
+        $.ajax({
+                url: '/auth/logout',
+                method: 'POST'
+            })
+            .done(function(result) {
+                //실패
+                if (result.state == 400) {
+                    alert(result.message);
+                    return;
+                }
+                //성공
+                else {
+                    set_cookie("accessToken", null, 0);
+                    set_cookie("refreshToken", null, 0)
+
+                    location.href="/main";
+                }
+            })
+            .fail(function() {
+                console.log("logout fail");
+            })
+    }
+    else {
+        return;
+    }
+}

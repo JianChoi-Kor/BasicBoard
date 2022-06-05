@@ -7,9 +7,8 @@
 <head>
     <!-- css -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/board-main.css}" >
-
     <!-- js -->
-    <!--    <script type="text/javascript" th:src="@{/js/test.js}"></script>-->
+    <script type="text/javascript" th:src="@{/js/auth.js}" defer></script>
 </head>
 
 <div layout:fragment="content">
@@ -144,6 +143,7 @@
                                 <li class="page-item"><a class="page-link" href="#">3</a></li>
                                 <li class="page-item"><a class="page-link" href="#">Next</a></li>
                             </ul>
+                            <button type="button" class="btn btn-primary" onclick="location.href='/board/write';">Write</button>
                         </nav>
 
                     </div>

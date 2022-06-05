@@ -4,6 +4,7 @@ import com.basic.board.advice.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,6 @@ public class AuthController {
     @ResponseBody
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody @Validated AuthReqDto.Login login, Errors errors) {
-        System.out.println("login");
         //valid check
         if (errors.hasErrors()) {
             return response.validResponse(errors);
@@ -58,5 +58,11 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         return authService.logout(request);
+    }
+
+    @RequestMapping("/fail")
+    public String loginFail(HttpServletRequest request) {
+        String msg = (String) request.getAttribute("msg");
+        return "error/401";
     }
 }

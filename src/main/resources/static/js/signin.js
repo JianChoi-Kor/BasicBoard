@@ -1,9 +1,9 @@
 
-function set_cookie(name, value, unixTime) {
-    var date = new Date();
-    date.setTime(date.getTime() + unixTime);
-    document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';expires=' + date.toUTCString() + ';path=/';
-}
+//function set_cookie(name, value, unixTime) {
+//    var date = new Date();
+//    date.setTime(date.getTime() + unixTime);
+//    document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';expires=' + date.toUTCString() + ';path=/';
+//}
 
 function set_cookie(name, value, unixTime) {
     var date = new Date();
@@ -77,5 +77,11 @@ function signin_action() {
     })
 }
 
-get_cookie("accessToken");
-get_cookie("refreshToken");
+function check_auth() {
+    var accessToken = get_cookie("accessToken");
+    if (accessToken != null) {
+        alert('이미 로그인된 상태입니다.');
+        history.back();
+    }
+}
+check_auth();

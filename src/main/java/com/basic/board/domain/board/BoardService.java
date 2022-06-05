@@ -22,6 +22,11 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
+    public String insertBoard() {
+        Member member = common.getMember();
+        return "page/board-write";
+    }
+
     public ResponseEntity<?> insertBoard(BoardReqDto.InsertBoard input) {
         Member member = common.getMember();
 

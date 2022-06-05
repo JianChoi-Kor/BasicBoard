@@ -62,6 +62,10 @@ public class AuthService {
 
     public ResponseEntity<?> signIn(AuthReqDto.Login login) {
 
+        if (memberRepository.findByEmail(login.getEmail()).orElse(null) == null) {
+            return response.fail("해당하는 유저가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
         //1. Login ID/PW 를 기반으로 Authentication 객체 생성
         //이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();

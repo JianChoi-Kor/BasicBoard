@@ -8,12 +8,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport"
           content="width=device-width, maximum-scale=1.0, minimum-scale=1, user-scalable=yes,initial-scale=1.0"/>
-    <title>basic board</title>
+    <title>Basic Board</title>
 
     <!-- common css -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
     <!-- common js -->
-    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}" defer></script>
 
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -82,7 +82,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/signin.css}">
 
     <!-- signin js -->
-    <script type="text/javascript" th:src="@{/js/signin.js}"></script>
+    <script type="text/javascript" th:src="@{/js/signin.js}" defer></script>
 </head>
 
 <body class="text-center">
@@ -106,7 +106,7 @@
                 </label>
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="button" onclick="signin_action()">Sign in</button>
-            <p class="mt-5 underline"><a href="http://localhost:9111/board/main">Skip Sign in</a></p>
+            <p class="mt-5 underline"><a href="/board/main">Skip Sign in</a></p>
             <p class="mt-5 mb-3 text-muted">&copy; 2022-06</p>
         </form>
     </main>

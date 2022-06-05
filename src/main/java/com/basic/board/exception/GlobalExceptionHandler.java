@@ -7,15 +7,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RequiredArgsConstructor
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ResponseBody
     @ExceptionHandler(UsernameNotFoundException.class)
     public void handleUsernameNotFoundException(final UsernameNotFoundException e) {
         log.error(e.getMessage());
@@ -25,6 +22,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public String dataAccessExceptionHandler(DataAccessException e) {
         log.error(e.getMessage());
-        return "page/error-500";
+        return "error/500";
     }
 }
