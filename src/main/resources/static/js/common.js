@@ -29,12 +29,8 @@ function auth_info() {
             document.getElementById('footer_signin_li').hidden = true;
 
             var headerMemberName = document.getElementById('header_member_name_a');
-            var footerMemberName = document.getElementById('footer_member_name_a');
-
             headerMemberName.hidden = false;
-            headerMemberName.innerText = memberName;
-            footerMemberName.hidden = false;
-            footerMemberName.innerText = memberName;
+            headerMemberName.innerText = '"' + memberName + '" 접속 중' ;
         }
     })
     .fail(function() {
