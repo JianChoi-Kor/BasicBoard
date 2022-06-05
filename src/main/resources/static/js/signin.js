@@ -5,6 +5,12 @@ function set_cookie(name, value, unixTime) {
     document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';expires=' + date.toUTCString() + ';path=/';
 }
 
+function set_cookie(name, value, unixTime) {
+    var date = new Date();
+    date.setTime(date.getTime() + unixTime);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+}
+
 function get_cookie(name) {
     var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
     return value? value[2] : null;
@@ -38,7 +44,6 @@ function signin_action() {
         contentType: 'application/json;charset=utf-8'
     })
     .done(function(result) {
-        console.log(result);
         //실패
         if (result.state == 400) {
             if (result.error.length > 0) {
@@ -62,6 +67,8 @@ function signin_action() {
             //token setCookie
             set_cookie("accessToken", accessToken, 1800000);
             set_cookie("refreshToken", refreshToken, refreshTokenExpirationTime);
+
+            location.href="/main";
         }
     })
     .fail(function() {
