@@ -65,8 +65,8 @@ function signin_action() {
             var refreshTokenExpirationTime = result.data.refreshTokenExpirationTime;
 
             //token setCookie
-            set_cookie("accessToken", accessToken, 1800000);
-            set_cookie("refreshToken", refreshToken, refreshTokenExpirationTime);
+            set_cookie("access_token", accessToken, 1800000);
+            set_cookie("refresh_token", refreshToken, refreshTokenExpirationTime);
 
             location.href="/main";
         }
@@ -78,7 +78,7 @@ function signin_action() {
 }
 
 function check_auth() {
-    var accessToken = get_cookie("accessToken");
+    var accessToken = get_cookie("access_token");
     if (accessToken != null) {
         alert('이미 로그인된 상태입니다.');
         history.back();

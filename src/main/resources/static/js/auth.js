@@ -13,7 +13,7 @@ function set_cookie(name, value, unixTime) {
 }
 
 function auth_info() {
-    var accessToken = get_cookie("accessToken");
+    var accessToken = get_cookie("access_token");
     if (accessToken == null) {
         document.getElementById('header_member_name_a').hidden = true;
         document.getElementById('header_logout_li').hidden = true;
@@ -50,7 +50,7 @@ auth_info();
 
 function logout_action() {
     if (window.confirm('로그아웃 하시겠습니까?')) {
-        var accessToken = get_cookie("accessToken");
+        var accessToken = get_cookie("access_token");
         if (accessToken == null) {
             return null;
         }
@@ -71,8 +71,8 @@ function logout_action() {
                 }
                 //성공
                 else {
-                    set_cookie("accessToken", null, 0);
-                    set_cookie("refreshToken", null, 0)
+                    set_cookie("access_token", null, 0);
+                    set_cookie("refresh_token", null, 0)
 
                     location.href="/main";
                 }
