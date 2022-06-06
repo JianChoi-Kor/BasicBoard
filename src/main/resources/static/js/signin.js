@@ -25,7 +25,8 @@ function signin_action() {
         email_elem.focus();
         alert('이메일을 입력해주세요.');
         return;
-    } else if (password_elem.value === '') {
+    }
+    if (password_elem.value === '') {
         password_elem.focus();
         alert('비밀번호를 입력해주세요.');
         return;

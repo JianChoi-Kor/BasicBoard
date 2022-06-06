@@ -1,5 +1,6 @@
 package com.basic.board.domain.board;
 
+import com.basic.board.advice.Response;
 import com.basic.board.domain.PageRequest;
 import com.basic.board.domain.board.entity.Board;
 import com.basic.board.util.Helper;
@@ -24,6 +25,7 @@ import java.util.List;
 @Controller
 public class BoardController {
 
+    private final Response response;
     private final BoardService boardService;
 
     //insert, update page
@@ -32,14 +34,12 @@ public class BoardController {
         return boardService.insertBoard();
     }
 
+    @ResponseBody
     @PostMapping("/write")
-    public ResponseEntity<?> insertBoard(@Validated BoardReqDto.InsertBoard input, Errors errors) {
+    public ResponseEntity<?> insertBoard(@RequestBody @Validated BoardReqDto.InsertBoard input, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
-            //first error
-            FieldError fieldError = errors.getFieldErrors().get(0);
-            Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
-            return null;
+            return response.validResponse(errors);
         }
         return boardService.insertBoard(input);
     }
@@ -117,10 +117,7 @@ public class BoardController {
                                          @Validated BoardReqDto.UpdateBoard input, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
-            //first error
-            FieldError fieldError = errors.getFieldErrors().get(0);
-            Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
-            return null;
+            return response.validResponse(errors);
         }
         return boardService.updateBoard(boardIdx, input);
     }
@@ -135,9 +132,7 @@ public class BoardController {
     public ResponseEntity<?> insertComment(@Validated BoardReqDto.InsertComment insertComment, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
-            //first error
-            FieldError fieldError = errors.getFieldErrors().get(0);
-            Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
+            return response.validResponse(errors);
         }
         return boardService.insertComment(insertComment);
     }
@@ -147,9 +142,7 @@ public class BoardController {
                                            @Validated BoardReqDto.UpdateComment updateComment, Errors errors) {
         //valid check
         if (errors.hasErrors()) {
-            //first error
-            FieldError fieldError = errors.getFieldErrors().get(0);
-            Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
+            return response.validResponse(errors);
         }
         return boardService.updateComment(commentIdx, updateComment);
     }

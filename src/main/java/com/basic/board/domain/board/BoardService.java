@@ -23,7 +23,6 @@ public class BoardService {
     private final CommentRepository commentRepository;
 
     public String insertBoard() {
-        Member member = common.getMember();
         return "page/board-write";
     }
 
