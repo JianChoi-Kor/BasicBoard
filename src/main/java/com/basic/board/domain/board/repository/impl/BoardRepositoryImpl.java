@@ -92,6 +92,31 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
+    public PageImpl<BoardResDto.BoardForList> getBoardList(PageRequest pageRequest) {
+        Pageable pageable = pageRequest.of();
+
+        //countQuery
+        JPAQuery<Long> countQuery = queryFactory.from(board).select(board.idx.count());
+        //resultQuery
+        JPAQuery<BoardResDto.BoardForList> resultQuery = queryFactory.from(board)
+                .select(Projections.constructor(BoardResDto.BoardForList.class,
+                        board.idx,
+                        board.title,
+                        board.views,
+                        board.writer.nickname,
+                        board.createAt));
+
+        //count
+        Long count = countQuery
+                .fetchFirst();
+        //result
+        List<BoardResDto.BoardForList> results = resultQuery
+                .fetch();
+
+        return new PageImpl<>(results, pageable, count);
+    }
+
+    @Override
     public BoardResDto.BoardDetail getBoardDetail(Long boardIdx) {
         //board
         BoardResDto.BoardDetail boardDetail =

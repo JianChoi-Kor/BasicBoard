@@ -46,6 +46,10 @@ public class BoardService {
         return boardRepository.getBoardList(searchBoard, pageRequest);
     }
 
+    public PageImpl<BoardResDto.BoardForList> boardList(PageRequest pageRequest) {
+        return boardRepository.getBoardList(pageRequest);
+    }
+
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
         boardRepository.updateBoardViews(boardIdx);
         BoardResDto.BoardDetail boardDetail = boardRepository.getBoardDetail(boardIdx);
