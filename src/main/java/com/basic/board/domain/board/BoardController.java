@@ -102,6 +102,7 @@ public class BoardController {
 
     @GetMapping("/update/{boardIdx}")
     public String updateBoard(@PathVariable Long boardIdx, Model model) {
+
         Board board = boardService.updateBoard(boardIdx);
         if (board == null) {
             Helper.errorMsg("잘못된 요청입니다.");
