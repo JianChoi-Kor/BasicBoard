@@ -32,15 +32,17 @@ public class BoardResDto {
         private String title;
         private String contents;
         private Long views;
+        private Long writerIdx;
         private String writerName;
         private LocalDateTime createAt;
         private List<CommentForBoardDetail> commentForBoardDetailList;
 
-        public BoardDetail(Long idx, String title, String contents, Long views, String writerName, LocalDateTime createAt) {
+        public BoardDetail(Long idx, String title, String contents, Long views, Long writerIdx, String writerName, LocalDateTime createAt) {
             this.idx = idx;
             this.title = title;
             this.contents = contents;
             this.views = views;
+            this.writerIdx = writerIdx;
             this.writerName = writerName;
             this.createAt = createAt;
         }

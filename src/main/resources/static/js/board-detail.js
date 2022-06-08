@@ -7,12 +7,6 @@ function get_cookie(name) {
     return value? value[2] : null;
 }
 
-function set_cookie(name, value, unixTime) {
-    var date = new Date();
-    date.setTime(date.getTime() + unixTime);
-    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
-}
-
 function auth_info() {
     var accessToken = get_cookie("access_token");
     if (accessToken == null) {
@@ -90,10 +84,12 @@ function logout_action() {
     }
 }
 
-function modify_action() {
+function detail_page() {
     if (memberIdx != null) {
         document.getElementById('login_member_idx').value = memberIdx;
     }
+}
 
+function modify_action() {
 
 }

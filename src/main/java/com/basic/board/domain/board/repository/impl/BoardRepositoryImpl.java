@@ -125,6 +125,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                                 board.title,
                                 board.contents,
                                 board.views,
+                                board.writer.idx,
                                 board.writer.nickname,
                                 board.createAt))
                         .from(board)

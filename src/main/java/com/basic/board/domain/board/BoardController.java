@@ -97,7 +97,7 @@ public class BoardController {
         }
         model.addAttribute(boardDetail);
 
-        return "page/boardDetail";
+        return "page/board-detail";
     }
 
     @GetMapping("/update/{boardIdx}")
