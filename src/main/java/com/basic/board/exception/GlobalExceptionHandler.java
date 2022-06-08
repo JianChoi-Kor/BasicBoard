@@ -1,27 +1,30 @@
 package com.basic.board.exception;
 
-import com.basic.board.util.Helper;
+import com.basic.board.advice.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RequiredArgsConstructor
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final Response response;
+
     @ExceptionHandler(UsernameNotFoundException.class)
-    public void handleUsernameNotFoundException(final UsernameNotFoundException e) {
+    public ResponseEntity<?> handleUsernameNotFoundException(final UsernameNotFoundException e) {
         log.error(e.getMessage());
-        Helper.errorMsg(e.getMessage());
+        return response.fail(e.getMessage());
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public String dataAccessExceptionHandler(DataAccessException e) {
+    public ResponseEntity<?> dataAccessExceptionHandler(DataAccessException e) {
         log.error(e.getMessage());
-        return "error/500";
+        return response.fail(e.getMessage());
     }
 }

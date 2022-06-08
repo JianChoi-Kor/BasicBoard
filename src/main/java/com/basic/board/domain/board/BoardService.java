@@ -22,10 +22,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
-    public String insertBoard() {
-        return "page/board-write";
-    }
-
     public ResponseEntity<?> insertBoard(BoardReqDto.InsertBoard input) {
         Member member = common.getMember();
 
@@ -46,28 +42,10 @@ public class BoardService {
         return boardRepository.getBoardList(searchBoard, pageRequest);
     }
 
-    public PageImpl<BoardResDto.BoardForList> boardList(PageRequest pageRequest) {
-        return boardRepository.getBoardList(pageRequest);
-    }
-
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
         boardRepository.updateBoardViews(boardIdx);
         BoardResDto.BoardDetail boardDetail = boardRepository.getBoardDetail(boardIdx);
         return boardDetail;
-    }
-
-    public Board updateBoard(Long boardIdx) {
-        Member member = common.getMember();
-
-        //board
-        Board board = boardRepository.findByIdx(boardIdx);
-        if (board.isDeleteYn()) {
-            return null;
-        }
-        if (!board.getWriter().getIdx().equals(member.getIdx())) {
-            return null;
-        }
-        return board;
     }
 
     public ResponseEntity<?> updateBoard(Long boardIdx, BoardReqDto.UpdateBoard input) {

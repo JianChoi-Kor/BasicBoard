@@ -2,15 +2,11 @@ package com.basic.board.domain.board;
 
 import com.basic.board.advice.Response;
 import com.basic.board.domain.PageRequest;
-import com.basic.board.domain.board.entity.Board;
-import com.basic.board.util.Helper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +24,6 @@ public class BoardController {
     private final Response response;
     private final BoardService boardService;
 
-    //insert, update page
-    @GetMapping("/write")
-    public String insertBoard() {
-        return boardService.insertBoard();
-    }
-
     @ResponseBody
     @PostMapping("/write")
     public ResponseEntity<?> insertBoard(@RequestBody @Validated BoardReqDto.InsertBoard input, Errors errors) {
@@ -45,29 +35,24 @@ public class BoardController {
     }
 
     @GetMapping("/main")
-    public String boardList(@Validated BoardReqDto.SearchBoard search, Errors searchErrors,
-                                       PageRequest pageRequest, Model model) {
+    public ResponseEntity<?> boardList(@Validated BoardReqDto.SearchBoard search, Errors searchErrors,
+                                       PageRequest pageRequest) {
         //valid check
         if (searchErrors.hasErrors()) {
             //first error
-            FieldError fieldError = searchErrors.getFieldErrors().get(0);
-            Helper.errorMsg(fieldError.getField(), fieldError.getDefaultMessage());
-            return null;
+            return response.validResponse(searchErrors);
         }
 
         //type && keyword check
         if ((search.getKeyword() != null && !search.getKeyword().equals("")) && search.getType() == null) {
-            Helper.errorMsg("잘못된 검색 조건입니다.");
-            return null;
+            return response.fail("잘못된 검색 조건입니다.");
         }
         if (search.getType() != null && search.getKeyword() == null) {
-            Helper.errorMsg("잘못된 검색 조건입니다.");
-            return null;
+            return response.fail("잘못된 검색 조건입니다.");
         }
         List<String> typeList = Arrays.asList("title", "contents", "titleAndContents");
         if (search.getType() !=  null && !typeList.contains(search.getType())) {
-            Helper.errorMsg("잘못된 검색 조건입니다.");
-            return null;
+            return response.fail("잘못된 검색 조건입니다.");
         }
 
         //startDate, endDate check
@@ -77,39 +62,21 @@ public class BoardController {
             LocalDateTime startDate = LocalDate.parse(search.getStartDate(), dateTimeFormatter).atStartOfDay();
             LocalDateTime endDate = LocalDate.parse(search.getEndDate(), dateTimeFormatter).atTime(23, 59, 59);
             if (startDate.isAfter(endDate)) {
-                Helper.errorMsg("잘못된 검색 조건입니다.");
-                return null;
+                return response.fail("잘못된 검색 조건입니다.");
             }
         }
 
         PageImpl<BoardResDto.BoardForList> boardList = boardService.boardList(search, pageRequest);
-        model.addAttribute(boardList);
-
-        return "page/board-main";
+        return response.success(boardList);
     }
 
     @GetMapping("/{boardIdx}")
-    public String boardDetail(@PathVariable Long boardIdx, Model model) {
+    public ResponseEntity<?> boardDetail(@PathVariable Long boardIdx) {
         BoardResDto.BoardDetail boardDetail = boardService.boardDetail(boardIdx);
         if (boardDetail == null) {
-            Helper.errorMsg("잘못된 요청입니다.");
-            return null;
+            return response.fail("잘못된 요청입니다.");
         }
-        model.addAttribute(boardDetail);
-
-        return "page/board-detail";
-    }
-
-    @GetMapping("/update/{boardIdx}")
-    public String updateBoard(@PathVariable Long boardIdx, Model model) {
-        Board board = boardService.updateBoard(boardIdx);
-        if (board == null) {
-            Helper.errorMsg("잘못된 요청입니다.");
-            return null;
-        }
-        model.addAttribute(board);
-
-        return "page/boardWrite";
+        return response.success(boardDetail);
     }
 
     @PatchMapping("/update/{boardIdx}")
