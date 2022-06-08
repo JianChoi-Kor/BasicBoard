@@ -16,6 +16,6 @@ public class MainService {
 
     public ResponseEntity<?> authInfo() {
         Member member = common.getMember();
-        return response.success((Object) member.getNickname());
+        return response.success(new MainResDto.MemberInfo(member.getIdx(), member.getNickname()));
     }
 }

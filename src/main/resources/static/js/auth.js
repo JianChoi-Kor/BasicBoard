@@ -1,4 +1,5 @@
 
+var memberIdx;
 var memberName;
 
 function get_cookie(name) {
@@ -29,7 +30,10 @@ function auth_info() {
         method: 'GET'
     })
     .done(function(result) {
-        memberName = result.data;
+        console.log(result);
+        memberIdx = result.data.memberIdx;
+        memberName = result.data.memberName;
+
         if (memberName != null) {
             document.getElementById('header_signin_li').hidden = true;
             document.getElementById('footer_signin_li').hidden = true;
