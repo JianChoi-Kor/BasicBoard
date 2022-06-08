@@ -34,6 +34,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     QComment subComment = new QComment("subComment");
     QLiked liked = new QLiked("liked");
     QLiked subLiked = new QLiked("subLiked");
+    QLiked loginMemberLiked = new QLiked("loginMemberLiked");
 
     @Override
     public PageImpl<BoardResDto.BoardForList> getBoardList(BoardReqDto.SearchBoard searchBoard, PageRequest pageRequest) {
@@ -92,32 +93,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public PageImpl<BoardResDto.BoardForList> getBoardList(PageRequest pageRequest) {
-        Pageable pageable = pageRequest.of();
-
-        //countQuery
-        JPAQuery<Long> countQuery = queryFactory.from(board).select(board.idx.count());
-        //resultQuery
-        JPAQuery<BoardResDto.BoardForList> resultQuery = queryFactory.from(board)
-                .select(Projections.constructor(BoardResDto.BoardForList.class,
-                        board.idx,
-                        board.title,
-                        board.views,
-                        board.writer.nickname,
-                        board.createAt));
-
-        //count
-        Long count = countQuery
-                .fetchFirst();
-        //result
-        List<BoardResDto.BoardForList> results = resultQuery
-                .fetch();
-
-        return new PageImpl<>(results, pageable, count);
-    }
-
-    @Override
-    public BoardResDto.BoardDetail getBoardDetail(Long boardIdx) {
+    public BoardResDto.BoardDetail getBoardDetail(Long boardIdx, Long memberIdx) {
         //board
         BoardResDto.BoardDetail boardDetail =
                 queryFactory.select(Projections.constructor(BoardResDto.BoardDetail.class,
@@ -139,10 +115,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         comment.contents,
                         comment.writer.nickname,
                         comment.createAt,
+                        loginMemberLiked.isNotNull(),
                         liked.idx.count()))
                         .from(comment)
                         .join(board).on(comment.boardIdx.eq(board.idx))
                         .leftJoin(liked).on(comment.idx.eq(liked.commentIdx))
+                        .leftJoin(loginMemberLiked).on(comment.idx.eq(loginMemberLiked.commentIdx).and(loginMemberLiked.memberIdx.eq(memberIdx)))
                         .where(board.idx.eq(boardIdx).and(comment.parentCommentIdx.isNull()))
                         .groupBy(comment.idx)
                         .orderBy(comment.createAt.asc())
@@ -156,11 +134,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         subComment.contents,
                         subComment.writer.nickname,
                         subComment.createAt,
+                        loginMemberLiked.isNotNull(),
                         subLiked.idx.count()))
                         .from(subComment)
                         .join(comment).on(subComment.parentCommentIdx.eq(comment.idx))
                         .join(board).on(comment.boardIdx.eq(board.idx))
                         .leftJoin(subLiked).on(subComment.idx.eq(subLiked.commentIdx))
+                        .leftJoin(loginMemberLiked).on(subComment.idx.eq(loginMemberLiked.commentIdx).and(loginMemberLiked.memberIdx.eq(memberIdx)))
                         .where(board.idx.eq(boardIdx).and(subComment.parentCommentIdx.isNotNull()))
                         .groupBy(subComment.idx)
                         .orderBy(subComment.createAt.asc())

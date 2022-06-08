@@ -43,8 +43,14 @@ public class BoardService {
     }
 
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
+        Member member = common.isMember();
+        Long memberIdx = null;
+        if (member != null) {
+            memberIdx = member.getIdx();
+        }
+
         boardRepository.updateBoardViews(boardIdx);
-        return boardRepository.getBoardDetail(boardIdx);
+        return boardRepository.getBoardDetail(boardIdx, memberIdx);
     }
 
     public ResponseEntity<?> updateBoard(Long boardIdx, BoardReqDto.InsertAndUpdate input) {

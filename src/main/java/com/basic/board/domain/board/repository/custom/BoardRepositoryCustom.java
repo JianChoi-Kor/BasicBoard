@@ -7,8 +7,6 @@ import org.springframework.data.domain.PageImpl;
 
 public interface BoardRepositoryCustom {
     PageImpl<BoardResDto.BoardForList> getBoardList(BoardReqDto.SearchBoard searchBoard, PageRequest pageRequest);
-    PageImpl<BoardResDto.BoardForList> getBoardList(PageRequest pageRequest);
-
-    BoardResDto.BoardDetail getBoardDetail(Long boardIdx);
+    BoardResDto.BoardDetail getBoardDetail(Long boardIdx, Long memberIdx);
     void updateBoardViews(Long boardIdx);
 }

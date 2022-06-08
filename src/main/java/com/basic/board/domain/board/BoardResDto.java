@@ -10,7 +10,6 @@ import java.util.List;
 
 public class BoardResDto {
 
-
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
@@ -57,13 +56,15 @@ public class BoardResDto {
         private String writerName;
         private LocalDateTime createAt;
         private Long likeCount;
+        private boolean isLiked;
         private List<SubCommentForBoardDetail> subCommentForBoardDetailList;
 
-        public CommentForBoardDetail(Long idx, String contents, String writerName, LocalDateTime createAt, Long likeCount) {
+        public CommentForBoardDetail(Long idx, String contents, String writerName, LocalDateTime createAt, boolean isLiked, Long likeCount) {
             this.idx = idx;
             this.contents = contents;
             this.writerName = writerName;
             this.createAt = createAt;
+            this.isLiked = isLiked;
             this.likeCount = likeCount;
         }
     }
@@ -77,6 +78,7 @@ public class BoardResDto {
         private String contents;
         private String writerName;
         private LocalDateTime createAt;
+        private boolean isLiked;
         private Long likeCount;
     }
 }

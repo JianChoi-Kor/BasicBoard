@@ -18,6 +18,6 @@ public class Liked {
     private Long commentIdx;
 
     //작성자 고유 번호
-    @Column(name = "writer_idx", nullable = false)
-    private Long writerIdx;
+    @Column(name = "member_idx", nullable = false)
+    private Long memberIdx;
 }

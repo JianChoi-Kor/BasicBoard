@@ -22,4 +22,13 @@ public class Common {
                 .orElseThrow(() -> new UsernameNotFoundException("No authentication information."));
         return member;
     }
+
+    public Member isMember() {
+        //SecurityContext 에 담겨 있는 authentication 정보
+        Authentication authentication = SecurityUtil.getCurrentAuthentication();
+
+        Member member = memberRepository.findByEmail(authentication.getName())
+                .orElse(null);
+        return member;
+    }
 }
