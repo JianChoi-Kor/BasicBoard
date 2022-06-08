@@ -22,7 +22,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
-    public ResponseEntity<?> insertBoard(BoardReqDto.InsertBoard input) {
+    public ResponseEntity<?> insertBoard(BoardReqDto.InsertAndUpdate input) {
         Member member = common.getMember();
 
         //board
@@ -44,11 +44,10 @@ public class BoardService {
 
     public BoardResDto.BoardDetail boardDetail(Long boardIdx) {
         boardRepository.updateBoardViews(boardIdx);
-        BoardResDto.BoardDetail boardDetail = boardRepository.getBoardDetail(boardIdx);
-        return boardDetail;
+        return boardRepository.getBoardDetail(boardIdx);
     }
 
-    public ResponseEntity<?> updateBoard(Long boardIdx, BoardReqDto.UpdateBoard input) {
+    public ResponseEntity<?> updateBoard(Long boardIdx, BoardReqDto.InsertAndUpdate input) {
         Member member = common.getMember();
 
         //board check
