@@ -17,7 +17,6 @@ public class Common {
     public Member getMember() {
         //SecurityContext 에 담겨 있는 authentication 정보
         Authentication authentication = SecurityUtil.getCurrentAuthentication();
-
         Member member = memberRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("No authentication information."));
         return member;
