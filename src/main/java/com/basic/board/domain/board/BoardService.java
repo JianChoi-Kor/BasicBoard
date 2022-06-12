@@ -4,8 +4,10 @@ import com.basic.board.advice.Response;
 import com.basic.board.domain.PageRequest;
 import com.basic.board.domain.board.entity.Board;
 import com.basic.board.domain.board.entity.Comment;
+import com.basic.board.domain.board.entity.Liked;
 import com.basic.board.domain.board.repository.BoardRepository;
 import com.basic.board.domain.board.repository.CommentRepository;
+import com.basic.board.domain.board.repository.LikedRepository;
 import com.basic.board.domain.member.entity.Member;
 import com.basic.board.util.Common;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class BoardService {
     private final Common common;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final LikedRepository likedRepository;
 
     public ResponseEntity<?> insertBoard(BoardReqDto.InsertAndUpdate input) {
         Member member = common.getMember();
@@ -179,5 +182,24 @@ public class BoardService {
         commentRepository.save(comment);
 
         return response.success("댓글이 삭제되었습니다.");
+    }
+
+    public ResponseEntity<?> likeComment(Long commentIdx) {
+        Member member = common.getMember();
+
+        Comment comment = commentRepository.findByIdx(commentIdx);
+        if (comment == null) {
+            return response.fail("해당하는 댓글이 존재하지 않습니다.");
+        }
+        Liked liked = likedRepository.findByCommentIdxAndMemberIdx(commentIdx, member.getIdx());
+        //해당 댓글에 대한 로그인 회원의 좋아요가 없는 경우
+        if (liked == null) {
+            likedRepository.save(new Liked(commentIdx, member.getIdx()));
+        }
+        //해당 댓글에 대한 로그인 회원의 좋아요가 있는 경우 (좋아요 취소)
+        else {
+            likedRepository.delete(liked);
+        }
+        return response.success();
     }
 }

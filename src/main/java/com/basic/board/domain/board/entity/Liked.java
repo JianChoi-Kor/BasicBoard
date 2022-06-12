@@ -20,4 +20,9 @@ public class Liked {
     //작성자 고유 번호
     @Column(name = "member_idx", nullable = false)
     private Long memberIdx;
+
+    public Liked(Long commentIdx, Long memberIdx) {
+        this.commentIdx = commentIdx;
+        this.memberIdx = memberIdx;
+    }
 }

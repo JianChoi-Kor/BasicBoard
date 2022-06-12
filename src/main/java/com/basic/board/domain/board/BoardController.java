@@ -129,4 +129,10 @@ public class BoardController {
     public ResponseEntity<?> deleteComment(@PathVariable Long commentIdx) {
         return boardService.deleteComment(commentIdx);
     }
+
+    @ApiOperation(value = "댓글 좋아요", notes = "댓글 좋아요 기능", authorizations = @Authorization(value = "Bearer"))
+    @GetMapping("/comment/like/{commentIdx}")
+    public ResponseEntity<?> likeComment(@PathVariable Long commentIdx) {
+        return boardService.likeComment(commentIdx);
+    }
 }

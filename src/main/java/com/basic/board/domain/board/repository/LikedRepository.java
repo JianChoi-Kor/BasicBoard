@@ -4,5 +4,5 @@ import com.basic.board.domain.board.entity.Liked;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikedRepository extends JpaRepository<Liked, Long> {
-
+    Liked findByCommentIdxAndMemberIdx(Long commentIdx, Long memberIdx);
 }
