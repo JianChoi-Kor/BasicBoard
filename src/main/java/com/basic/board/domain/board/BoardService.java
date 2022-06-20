@@ -186,6 +186,7 @@ public class BoardService {
 
     public ResponseEntity<?> likeComment(Long commentIdx) {
         Member member = common.getMember();
+
         Comment comment = commentRepository.findByIdx(commentIdx);
         if (comment == null) {
             return response.fail("해당하는 댓글이 존재하지 않습니다.");
