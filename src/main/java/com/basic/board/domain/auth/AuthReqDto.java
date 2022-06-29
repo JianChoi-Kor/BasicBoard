@@ -41,10 +41,10 @@ public class AuthReqDto {
 
         @ApiModelProperty(required = true, value = "이메일", example = "test@test.com")
         @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
-        @NotBlank(message = "이메일을 입력해주세요.")
+        @NotBlank(message = "{common.email.notblank}")
         private String email;
         @ApiModelProperty(required = true, value = "비밀번호")
-        @NotBlank(message = "비밀번호를 입력해주세요.")
+        @NotBlank(message = "{common.password.notblank}")
         private String password;
 
         public UsernamePasswordAuthenticationToken toAuthentication() {

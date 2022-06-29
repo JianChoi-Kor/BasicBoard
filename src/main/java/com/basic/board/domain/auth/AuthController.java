@@ -35,11 +35,7 @@ public class AuthController {
     @ApiOperation(value = "로그인", notes = "로그인 기능")
     @ResponseBody
     @PostMapping("/signin")
-    public ResponseEntity<?> signIn(@RequestBody @Validated AuthReqDto.Login login, Errors errors) {
-        //valid check
-        if (errors.hasErrors()) {
-            return response.validResponse(errors);
-        }
+    public ResponseEntity<?> signIn(@RequestBody @Validated AuthReqDto.Login login) {
         return authService.signIn(login);
     }
 
